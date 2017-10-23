@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-FILE_DRUSH_ALIAS=${CURRENT_DIR}/tmp/drush_alias
-DRUSH_ALIAS=$(<${FILE_DRUSH_ALIAS})
-FILE_PROJECT_ROOT=${CURRENT_DIR}/tmp/project_root
-PROJECT_ROOT=$(<${FILE_PROJECT_ROOT})
 
 source ${CURRENT_DIR}/functions.sh
+
+DRUSH_ALIAS=$(<${FILE_DRUSH_ALIAS})
+PROJECT_ROOT=$(<${FILE_PROJECT_ROOT})
 
 deploy_challenge() {
     local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"

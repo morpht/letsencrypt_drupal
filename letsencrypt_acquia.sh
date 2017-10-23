@@ -17,9 +17,6 @@ DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
 
 FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_acquia/domains.txt
 FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_acquia
-FILE_BASECONFIG=${CURRENT_DIR}/tmp/baseconfig
-FILE_DRUSH_ALIAS=${CURRENT_DIR}/tmp/drush_alias
-FILE_PROJECT_ROOT=${CURRENT_DIR}/tmp/project_root
 
 source ${CURRENT_DIR}/functions.sh
 
@@ -45,29 +42,31 @@ else
   logline "${DEHYDRATED} is already in place - all good."
 fi
 
+# Start clean
+rm -rf ${TMP_DIR}
+mkdir -p ${TMP_DIR}/wellknown
+mkdir -p ${CERT_DIR}
+
 # Generate config and create empty domains.txt
-rm -f ${FILE_BASECONFIG}
 echo 'CA="https://acme-v01.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
 echo 'CA_TERMS="https://acme-v01.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
 #echo 'CA="https://acme-staging.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
 #echo 'CA_TERMS="https://acme-staging.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
 echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
-echo 'WELLKNOWN="'${CURRENT_DIR}/tmp/wellknown'"' >> ${FILE_BASECONFIG}
-echo 'BASEDIR="'${CURRENT_DIR}/tmp'"' >> ${FILE_BASECONFIG}
+echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
+echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
 echo 'HOOK="'${CURRENT_DIR}'/letsencrypt_acquia_hooks.sh"' >> ${FILE_BASECONFIG}
 echo 'DOMAINS_TXT="'${FILE_DOMAINSTXT}'"' >> ${FILE_BASECONFIG}
 echo 'CONFIG_D="'${FILE_CONFIG}'"' >> ${FILE_BASECONFIG}
 
-# Dehydrated does not pass arbitary parameters to hooks. Save alias aside.
-rm -f ${FILE_DRUSH_ALIAS}
+# Dehydrated does not pass arbitary parameters to hooks. Save some data aside.
 echo ${DRUSH_ALIAS} > ${FILE_DRUSH_ALIAS}
-rm -f ${FILE_PROJECT_ROOT}
 echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
 
 
-#./dehydrated/dehydrated -f ${FILE_BASECONFIG} --version
-#./dehydrated/dehydrated -f ${FILE_BASECONFIG} --env
-./dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
+#${CURRENT_DIR}/dehydrated/dehydrated -f ${FILE_BASECONFIG} --version
+#${CURRENT_DIR}/dehydrated/dehydrated -f ${FILE_BASECONFIG} --env
+${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
 
 # Cleanup
 #rm -f ${FILE_BASECONFIG}

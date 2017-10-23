@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+CERT_DIR=~/.letsencrypt_acquia
+TMP_DIR=/tmp/letsencrypt_acquia
+FILE_BASECONFIG=${TMP_DIR}/baseconfig
+FILE_DRUSH_ALIAS=${TMP_DIR}/drush_alias
+FILE_PROJECT_ROOT=${TMP_DIR}/project_root
+
 #---------------------------------------------------------------------
 acquire_lock_or_exit()
 {
