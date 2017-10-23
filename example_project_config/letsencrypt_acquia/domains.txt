@@ -1,0 +1,1 @@
+ssl.prod.PROJECT.morpht.com project-domain-1.dlt www.project-domain-1.dlt project-domain-2.dlt www.project-domain-2.dlt
