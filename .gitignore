@@ -1,0 +1,5 @@
+# We clone https://github.com/lukas2511/dehydrated no need to commit.
+dehydrated
+
+#Ignore tmp files
+tmp/*
