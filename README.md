@@ -44,7 +44,7 @@ These steps to for PROD environment of PROJECT on Acquia Cloud.
     * Edit `letsencrypt_acquia/domains.txt`
       * One line, space separated list of domains.
       * First domain will be set as Common name
-      * Othes are set as SANs
+      * Others are set as SANs
     * Edit `letsencrypt_acquia/slack.sh`
       * Slack is optional. If you don't want to use it, just delete this file.
       * Get your webhook url here: https://my.slack.com/services/new/incoming-webhook/
