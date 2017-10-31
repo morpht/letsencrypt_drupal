@@ -7,8 +7,10 @@
 #---------------------------------------------------------------------
 # * Site alias
 # ** Drush alias for the site.
-# * Path to domains.txt
-# ** One line = one cert, you most likely want space separated list of domains on one line for one acquia project.
+# * Path to project root
+# ** Must contain letsencrypt_acquia folder. See readme.
+
+# Basic variables.
 DRUSH_ALIAS="$1"
 PROJECT_ROOT="$2"
 
@@ -20,55 +22,78 @@ FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_acquia
 
 source ${CURRENT_DIR}/functions.sh
 
-#---------------------------------------------------------------------
-#---------------------------------------------------------------------
-#---------------------------------------------------------------------
+# Based on "Shell script self update using git"
+# @See: https://stackoverflow.com/a/35365800
+# @See: https://stackoverflow.com/a/13738316
+SCRIPT=$(readlink -f "$0")
+SCRIPTNAME="$0"
 
-# main code - let's go
-acquire_lock_or_exit
+self_update() {
+    cd $CURRENT_DIR
+    git fetch origin
+    reslog=$(git log HEAD..origin/master --oneline)
+    if [[ "${reslog}" != "" ]]; then
+        echo "Found a new version of me, updating myself..."
+        slackpost "${PROJECT_ROOT}" "warning" "Morpht/letsencrypt_acquia on ${DRUSH_ALIAS}" "Found a new version of me, updating myself..."
 
-# Make sure we have dehydrated library.
-if [ ! -f ${CURRENT_DIR}/dehydrated/dehydrated ]; then
-  logline "${DEHYDRATED} is missing - running git clone to get the script."
-  git clone ${DEHYDRATED} ${CURRENT_DIR}/dehydrated
+        # Remove dehydrated library to make sure we get new version.
+        rm -rf ${CURRENT_DIR}/dehydrated
+        # Self update.
+        git pull --force
+        git checkout master
+        git pull --force
+        # Running the new version.
+        exec "$CURRENT_DIR/letsencrypt_acquia.sh" "$DRUSH_ALIAS" "$PROJECT_ROOT"
 
-  if [ $? -eq 0 ]; then
-    logline "Successfully clonned ${DEHYDRATED}";
+        # Exit this old instance
+        exit 1
+    fi
+    echo "Already the latest version."
+    slackpost "${PROJECT_ROOT}" "good" "Morpht/letsencrypt_acquia on ${DRUSH_ALIAS}" "The script is already the latest version."
+}
+
+main() {
+  # main code - let's go
+  acquire_lock_or_exit
+
+  # Make sure we have dehydrated library.
+  if [ ! -f ${CURRENT_DIR}/dehydrated/dehydrated ]; then
+    logline "${DEHYDRATED} is missing - running git clone to get the script."
+    git clone ${DEHYDRATED} ${CURRENT_DIR}/dehydrated
+
+    if [ $? -eq 0 ]; then
+      logline "Successfully clonned ${DEHYDRATED}";
+    else
+      logline "Error clonning ${DEHYDRATED}";
+      exit 1
+    fi
   else
-    logline "Error clonning ${DEHYDRATED}";
-    exit 1
+    logline "${DEHYDRATED} is already in place - all good."
   fi
-else
-  logline "${DEHYDRATED} is already in place - all good."
-fi
 
-# Start clean
-rm -rf ${TMP_DIR}
-mkdir -p ${TMP_DIR}/wellknown
-mkdir -p ${CERT_DIR}
+  # Start clean
+  rm -rf ${TMP_DIR}
+  mkdir -p ${TMP_DIR}/wellknown
+  mkdir -p ${CERT_DIR}
 
-# Generate config and create empty domains.txt
-echo 'CA="https://acme-v01.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
-echo 'CA_TERMS="https://acme-v01.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
-#echo 'CA="https://acme-staging.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
-#echo 'CA_TERMS="https://acme-staging.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
-echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
-echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
-echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
-echo 'HOOK="'${CURRENT_DIR}'/letsencrypt_acquia_hooks.sh"' >> ${FILE_BASECONFIG}
-echo 'DOMAINS_TXT="'${FILE_DOMAINSTXT}'"' >> ${FILE_BASECONFIG}
-echo 'CONFIG_D="'${FILE_CONFIG}'"' >> ${FILE_BASECONFIG}
+  # Generate config and create empty domains.txt
+  echo 'CA="https://acme-v01.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
+  echo 'CA_TERMS="https://acme-v01.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
+  #echo 'CA="https://acme-staging.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
+  #echo 'CA_TERMS="https://acme-staging.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
+  echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
+  echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
+  echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
+  echo 'HOOK="'${CURRENT_DIR}'/letsencrypt_acquia_hooks.sh"' >> ${FILE_BASECONFIG}
+  echo 'DOMAINS_TXT="'${FILE_DOMAINSTXT}'"' >> ${FILE_BASECONFIG}
+  echo 'CONFIG_D="'${FILE_CONFIG}'"' >> ${FILE_BASECONFIG}
 
-# Dehydrated does not pass arbitary parameters to hooks. Save some data aside.
-echo ${DRUSH_ALIAS} > ${FILE_DRUSH_ALIAS}
-echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
+  # Dehydrated does not pass arbitary parameters to hooks. Save some data aside.
+  echo ${DRUSH_ALIAS} > ${FILE_DRUSH_ALIAS}
+  echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
 
+  ${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
+}
 
-#${CURRENT_DIR}/dehydrated/dehydrated -f ${FILE_BASECONFIG} --version
-#${CURRENT_DIR}/dehydrated/dehydrated -f ${FILE_BASECONFIG} --env
-${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
-
-# Cleanup
-#rm -f ${FILE_BASECONFIG}
-#rm -f ${FILE_DRUSH_ALIAS}
-#rm -f ${FILE_PROJECT_ROOT}
+self_update
+main
