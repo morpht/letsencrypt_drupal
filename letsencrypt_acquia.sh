@@ -17,10 +17,11 @@ DRUSH_ALIAS="$1"
 DRUPAL_VERSION="$2"
 PROJECT_ROOT="$3"
 
+DRUSH_ALIAS_NO_AT="${DRUSH_ALIAS/@/}"
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
 
-FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_acquia/domains.txt
+FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_acquia/domains_${DRUSH_ALIAS_NO_AT}.txt
 FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_acquia
 
 source ${CURRENT_DIR}/functions.sh

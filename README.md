@@ -42,7 +42,9 @@ These steps to for PROD environment of PROJECT on Acquia Cloud.
     * Edit `letsencrypt_acquia/config.sh` 
       * You need to set your e-mail. The script provides the rest of defaults needed to get a certificate.
       * You can alter other values as described here: https://github.com/lukas2511/dehydrated/blob/master/docs/examples/config
-    * Edit `letsencrypt_acquia/domains.txt`
+    * Edit `letsencrypt_acquia/domains_site.env.txt`
+      * Rename it based on site alias you are going to be using.
+      * For multiple environments create multiple copies of this file.
       * One line, space separated list of domains.
       * First domain will be set as Common name
       * Others are set as SANs
