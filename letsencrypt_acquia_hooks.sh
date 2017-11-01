@@ -5,6 +5,7 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${CURRENT_DIR}/functions.sh
 
 DRUSH_ALIAS=$(<${FILE_DRUSH_ALIAS})
+DRUPAL_VERSION=$(<${FILE_DRUPAL_VERSION})
 PROJECT_ROOT=$(<${FILE_PROJECT_ROOT})
 
 deploy_challenge() {
@@ -27,8 +28,7 @@ deploy_challenge() {
     #   TXT record. For HTTP validation it is the value that is expected
     #   be found in the $TOKEN_FILENAME file.
 
-    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    drush ${DRUSH_ALIAS} vset -y --uri=${DOMAIN}  letsencrypt_challenge "${TOKEN_VALUE}"
+    drush_set_challenge ${DRUSH_ALIAS} ${DRUPAL_VERSION} ${DOMAIN} ${TOKEN_VALUE}
 }
 
 clean_challenge() {
@@ -40,9 +40,7 @@ clean_challenge() {
     #
     # The parameters are the same as for deploy_challenge.
 
-
-    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    drush ${DRUSH_ALIAS} vset -y --uri=${DOMAIN}  letsencrypt_challenge "clean_challenge"
+    drush_set_challenge ${DRUSH_ALIAS} ${DRUPAL_VERSION} ${DOMAIN} "clean_challenge"
 }
 
 deploy_cert() {

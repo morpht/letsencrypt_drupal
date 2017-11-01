@@ -4,6 +4,7 @@ CERT_DIR=~/.letsencrypt_acquia
 TMP_DIR=/tmp/letsencrypt_acquia
 FILE_BASECONFIG=${TMP_DIR}/baseconfig
 FILE_DRUSH_ALIAS=${TMP_DIR}/drush_alias
+FILE_DRUPAL_VERSION=${TMP_DIR}/drupal_version
 FILE_PROJECT_ROOT=${TMP_DIR}/project_root
 
 #---------------------------------------------------------------------
@@ -53,5 +54,22 @@ cd_or_exit()
   if [ $rv -ne 0 ]; then
     logline "Failed to cd into $1 directory. exiting."
     exit 31
+  fi
+}
+
+#---------------------------------------------------------------------
+drush_set_challenge()
+{
+  DRUSH_ALIAS="${1}"
+  DRUPAL_VERSION="${2}"
+  DOMAIN="${3}"
+  TOKEN_VALUE="${4}"
+
+  if [[ "${DRUPAL_VERSION}" == "7" ]]; then
+    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
+    drush ${DRUSH_ALIAS} vset -y --uri=${DOMAIN}  letsencrypt_challenge "${TOKEN_VALUE}"
+  elif [[ "${DRUPAL_VERSION}" == "8" ]]; then
+    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
+    drush ${DRUSH_ALIAS} sset -y --uri=${DOMAIN}  letsencrypt_challenge.challenge "${TOKEN_VALUE}"
   fi
 }

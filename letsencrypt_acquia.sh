@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 
 # Example call:
-# ./letsencrypt_acquia.sh @acquiasite.prod /var/www/html/acquiasite.prod &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_acquia.log
+# ./letsencrypt_acquia.sh @acquiasite.prod 8 /var/www/html/acquiasite.prod &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_acquia.log
 
 # Params
 #---------------------------------------------------------------------
 # * Site alias
 # ** Drush alias for the site.
+# * Drupal version
+# ** 7|8
 # * Path to project root
 # ** Must contain letsencrypt_acquia folder. See readme.
 
 # Basic variables.
 DRUSH_ALIAS="$1"
-PROJECT_ROOT="$2"
+DRUPAL_VERSION="$2"
+PROJECT_ROOT="$3"
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
@@ -43,7 +46,7 @@ self_update() {
         git checkout master
         git pull --force
         # Running the new version.
-        exec "$CURRENT_DIR/letsencrypt_acquia.sh" "$DRUSH_ALIAS" "$PROJECT_ROOT"
+        exec "$CURRENT_DIR/letsencrypt_acquia.sh" "$DRUSH_ALIAS" "$DRUPAL_VERSION" "$PROJECT_ROOT"
 
         # Exit this old instance
         exit 1
@@ -90,6 +93,7 @@ main() {
 
   # Dehydrated does not pass arbitary parameters to hooks. Save some data aside.
   echo ${DRUSH_ALIAS} > ${FILE_DRUSH_ALIAS}
+  echo ${DRUPAL_VERSION} > ${FILE_DRUPAL_VERSION}
   echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
 
   ${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
