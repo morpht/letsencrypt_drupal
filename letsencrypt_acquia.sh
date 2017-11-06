@@ -83,8 +83,6 @@ main() {
   # Generate config and create empty domains.txt
   echo 'CA="https://acme-v01.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
   echo 'CA_TERMS="https://acme-v01.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
-  #echo 'CA="https://acme-staging.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
-  #echo 'CA_TERMS="https://acme-staging.api.letsencrypt.org/terms"' >> ${FILE_BASECONFIG}
   echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
   echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
   echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
