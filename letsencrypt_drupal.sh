@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Example call:
-# ./letsencrypt_acquia.sh @acquiasite.prod 8 /var/www/html/acquiasite.prod &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_acquia.log
+# ./letsencrypt_drupal.sh @acquiasite.prod 8 /var/www/html/acquiasite.prod &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_drupal.log
 
 # Params
 #---------------------------------------------------------------------
@@ -10,7 +10,7 @@
 # * Drupal version
 # ** 7|8
 # * Path to project root
-# ** Must contain letsencrypt_acquia folder. See readme.
+# ** Must contain letsencrypt_drupal folder. See readme.
 
 # Basic variables.
 DRUSH_ALIAS="$1"
@@ -21,8 +21,8 @@ DRUSH_ALIAS_NO_AT="${DRUSH_ALIAS/@/}"
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
 
-FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_acquia/domains_${DRUSH_ALIAS_NO_AT}.txt
-FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_acquia
+FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_drupal/domains_${DRUSH_ALIAS_NO_AT}.txt
+FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal
 
 source ${CURRENT_DIR}/functions.sh
 
@@ -38,7 +38,7 @@ self_update() {
     reslog=$(git log HEAD..origin/master --oneline)
     if [[ "${reslog}" != "" ]]; then
         echo "Found a new version of me, updating myself..."
-        slackpost "${PROJECT_ROOT}" "warning" "Morpht/letsencrypt_acquia on ${DRUSH_ALIAS}" "Found a new version of me, updating myself..."
+        slackpost "${PROJECT_ROOT}" "warning" "Morpht/letsencrypt_drupal on ${DRUSH_ALIAS}" "Found a new version of me, updating myself..."
 
         # Remove dehydrated library to make sure we get new version.
         rm -rf ${CURRENT_DIR}/dehydrated
@@ -47,13 +47,13 @@ self_update() {
         git checkout master
         git pull --force
         # Running the new version.
-        exec "$CURRENT_DIR/letsencrypt_acquia.sh" "$DRUSH_ALIAS" "$DRUPAL_VERSION" "$PROJECT_ROOT"
+        exec "$CURRENT_DIR/letsencrypt_drupal.sh" "$DRUSH_ALIAS" "$DRUPAL_VERSION" "$PROJECT_ROOT"
 
         # Exit this old instance
         exit 1
     fi
     echo "Already the latest version."
-    slackpost "${PROJECT_ROOT}" "good" "Morpht/letsencrypt_acquia on ${DRUSH_ALIAS}" "The script is already the latest version."
+    slackpost "${PROJECT_ROOT}" "good" "Morpht/letsencrypt_drupal on ${DRUSH_ALIAS}" "The script is already the latest version."
 }
 
 main() {
@@ -86,7 +86,7 @@ main() {
   echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
   echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
   echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
-  echo 'HOOK="'${CURRENT_DIR}'/letsencrypt_acquia_hooks.sh"' >> ${FILE_BASECONFIG}
+  echo 'HOOK="'${CURRENT_DIR}'/letsencrypt_drupal_hooks.sh"' >> ${FILE_BASECONFIG}
   echo 'DOMAINS_TXT="'${FILE_DOMAINSTXT}'"' >> ${FILE_BASECONFIG}
   echo 'CONFIG_D="'${FILE_CONFIG}'"' >> ${FILE_BASECONFIG}
 

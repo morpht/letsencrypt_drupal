@@ -1,13 +1,13 @@
-# Let's Encrypt Acquia
+# Let's Encrypt Drupal
 
-Wrapper script for https://github.com/lukas2511/dehydrated opinionated towards running in Acquia Cloud environment and reporting to Slack. Slack is optional.
+Wrapper script for https://github.com/lukas2511/dehydrated opinionated towards running in Drupal hosting environments and reporting to Slack. Slack is optional. Let's Encrypt challenge is published trough Drupal using Drush. There is no need to alter webserver settings or upload files.
 
 ## What it does
 
 * Installation (TL;DR version)
-  * `git clone` this repository to Acquia server
+  * `git clone` this repository to your server
   * Add configuration to your project.
-  * Add scheduled task to Acquia.
+  * Add cron task.
 * Every time script gets executed it will
   * Self update check.
   * Check if lukas2511/dehydrated is available and download it if needed.
@@ -28,27 +28,27 @@ Wrapper script for https://github.com/lukas2511/dehydrated opinionated towards r
 
 ## Installation
 
-These steps to for PROD environment of PROJECT on Acquia Cloud.
+These steps are for PROD environment of PROJECT on Acquia Cloud. Can be easily adapted to other hosting environments.
 
 * `ssh PROJECT.PROD@srv-XXXX.devcloud.hosting.acquia.com`
   * (You can get the address on "Servers" tab in Acquia UI)
   * `cd ~`
-  * `git clone git@github.com:morpht/letsencrypt_acquia.git`
+  * `git clone git@github.com:morpht/letsencrypt_drupal.git`
 * In project root
-  * Add letsencrypt_acquia configuration.
-    * `git clone git@github.com:morpht/letsencrypt_acquia.git tmp_lea` # Temporarily get the repository to get example configuration files.
+  * Add letsencrypt_drupal configuration.
+    * `git clone git@github.com:morpht/letsencrypt_drupal.git tmp_lea` # Temporarily get the repository to get example configuration files.
     * `cp -r tmp_lea/example_project_config/* .` # Copy the configuration.
     * `rm -rf tmp_lea/`
-    * Edit `letsencrypt_acquia/config.sh` 
+    * Edit `letsencrypt_drupal/config.sh` 
       * You need to set your e-mail. The script provides the rest of defaults needed to get a certificate.
       * You can alter other values as described here: https://github.com/lukas2511/dehydrated/blob/master/docs/examples/config
-    * Edit `letsencrypt_acquia/domains_site.env.txt`
+    * Edit `letsencrypt_drupal/domains_site.env.txt`
       * Rename it based on site alias you are going to be using.
       * For multiple environments create multiple copies of this file.
       * One line, space separated list of domains.
       * First domain will be set as Common name
       * Others are set as SANs
-    * Edit `letsencrypt_acquia/slack.sh`
+    * Edit `letsencrypt_drupal/slack.sh`
       * Slack is optional. If you don't want to use it, just delete this file.
       * Get your webhook url here: https://my.slack.com/services/new/incoming-webhook/
       * Set the webhook url and target channel variables.
@@ -62,7 +62,7 @@ These steps to for PROD environment of PROJECT on Acquia Cloud.
     * You should have 30 days of time (with default settings) even if something fails or new manual certificate upload is needed.
   * New job:
     * Job name: `LE renew cert` (just a default, feel free change it)
-    * Command: `/home/PROJECT/letsencrypt_acquia/letsencrypt_acquia.sh @PROJECT.PROD /var/www/html/PROJECT.PROD &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_acquia.log`
+    * Command: `/home/PROJECT/letsencrypt_drupal/letsencrypt_drupal.sh @PROJECT.PROD /var/www/html/PROJECT.PROD &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_drupal.log`
     * Command frequency `0 7 * * 1` ( https://crontab.guru/#0_7_*_*_1 )
   * It's good idea to run the command on Acquia manually or set the cron to run every minute for a bit so you don't have to wait.
 * First script run will post instructions to Slack.
@@ -76,7 +76,7 @@ These steps to for PROD environment of PROJECT on Acquia Cloud.
    Login to Acquia and open PROD environment for @PROJECT.PROD. Open SSL tab on the left side. Click Install SSL certificate.
    
    Text fields:
-   SSL certificate: /home/PROJECT/.letsencrypt_acquia/certs/PROD.PROJECT.morpht.com/fullchain.pem
-   SSL private key: /home/PROJECT/.letsencrypt_acquia/certs/PROD.PROJECT.morpht.com/privkey.pem
-   CA intermediate certificates: /home/PROJECT/.letsencrypt_acquia/certs/PROD.PROJECT.morpht.com/chain.pem
+   SSL certificate: /home/PROJECT/.letsencrypt_drupal/certs/PROD.PROJECT.morpht.com/fullchain.pem
+   SSL private key: /home/PROJECT/.letsencrypt_drupal/certs/PROD.PROJECT.morpht.com/privkey.pem
+   CA intermediate certificates: /home/PROJECT/.letsencrypt_drupal/certs/PROD.PROJECT.morpht.com/chain.pem
    ```

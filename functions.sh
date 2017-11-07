@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CERT_DIR=~/.letsencrypt_acquia
-TMP_DIR=/tmp/letsencrypt_acquia
+CERT_DIR=~/.letsencrypt_drupal
+TMP_DIR=/tmp/letsencrypt_drupal
 FILE_BASECONFIG=${TMP_DIR}/baseconfig
 FILE_DRUSH_ALIAS=${TMP_DIR}/drush_alias
 FILE_DRUPAL_VERSION=${TMP_DIR}/drupal_version
@@ -23,7 +23,7 @@ acquire_lock_or_exit()
 #---------------------------------------------------------------------
 slackpost()
 {
-  SLACK_CONF="${1}/letsencrypt_acquia/slack.sh"
+  SLACK_CONF="${1}/letsencrypt_drupal/slack.sh"
   # Can either be one of 'good', 'warning', 'danger', or any hex color code
   COLOR="${2}"
   USERNAME="${3}"
