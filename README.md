@@ -26,6 +26,14 @@ Wrapper script for https://github.com/lukas2511/dehydrated opinionated towards r
       * Post to Slack that everything is all right.
   * Altering the list of domains in project repository results in generating new certificate.
 
+## Requirements
+
+* Environment where you can run bash script and setup cron.
+* Read access to project root. (accessing config files)
+* Permissions to run Drush commands with Drush alias against the site which is accessible via domains listed in `domains_site.env.txt` from internet.
+* `git` must available.
+* https://www.drupal.org/project/letsencrypt_challenge on target site.
+
 ## Installation
 
 These steps are for PROD environment of PROJECT on Acquia Cloud. Can be easily adapted to other hosting environments.
