@@ -41,10 +41,10 @@ These steps are for PROD environment of PROJECT on Acquia Cloud. Can be easily a
 * `ssh PROJECT.PROD@srv-XXXX.devcloud.hosting.acquia.com`
   * (You can get the address on "Servers" tab in Acquia UI)
   * `cd ~`
-  * `git clone git@github.com:morpht/letsencrypt_drupal.git`
+  * `git clone https://github.com/morpht/letsencrypt_drupal.git`
 * In project root
   * Add letsencrypt_drupal configuration.
-    * `git clone git@github.com:morpht/letsencrypt_drupal.git tmp_lea` # Temporarily get the repository to get example configuration files.
+    * `git clone https://github.com/morpht/letsencrypt_drupal.git tmp_lea` # Temporarily get the repository to get example configuration files.
     * `cp -r tmp_lea/example_project_config/* .` # Copy the configuration.
     * `rm -rf tmp_lea/`
     * Edit `letsencrypt_drupal/config.sh` 
