@@ -70,7 +70,7 @@ These steps are for PROD environment of PROJECT on Acquia Cloud. Can be easily a
     * You should have 30 days of time (with default settings) even if something fails or new manual certificate upload is needed.
   * New job:
     * Job name: `LE renew cert` (just a default, feel free change it)
-    * Command: `/home/PROJECT/letsencrypt_drupal/letsencrypt_drupal.sh @PROJECT.PROD /var/www/html/PROJECT.PROD &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_drupal.log`
+    * Command: `/home/PROJECT/letsencrypt_drupal/letsencrypt_drupal.sh @PROJECT.PROD [7|8] /var/www/html/PROJECT.PROD &>> /var/log/sites/${AH_SITE_NAME}/logs/$(hostname -s)/letsencrypt_drupal.log`
     * Command frequency `0 7 * * 1` ( https://crontab.guru/#0_7_*_*_1 )
   * It's good idea to run the command on Acquia manually or set the cron to run every minute for a bit so you don't have to wait.
 * First script run will post instructions to Slack.
