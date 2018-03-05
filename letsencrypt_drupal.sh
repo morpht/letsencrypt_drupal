@@ -71,6 +71,13 @@ main() {
       logline "Error clonning ${DEHYDRATED}";
       exit 1
     fi
+
+    # Workaround: Something changes, we need to investigate and update.
+    # Using this version from Dec 2017 works.
+    cd ${CURRENT_DIR}/dehydrated
+    git checkout 2adc57791ca10ffa43c535a6f69fb77ebb0e351a
+    cd ..
+
   else
     logline "${DEHYDRATED} is already in place - all good."
   fi
