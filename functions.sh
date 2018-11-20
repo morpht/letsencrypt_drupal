@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CERT_DIR=~/.letsencrypt_drupal
-TMP_DIR=/tmp/letsencrypt_drupal/$PROJECT_NAME
+TMP_DIR=/tmp/letsencrypt_drupal_$PROJECT_NAME
 FILE_BASECONFIG=${TMP_DIR}/baseconfig
 FILE_DRUSH_ALIAS=${TMP_DIR}/drush_alias
 FILE_DRUPAL_VERSION=${TMP_DIR}/drupal_version
