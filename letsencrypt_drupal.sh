@@ -18,6 +18,9 @@ DRUPAL_VERSION="$2"
 PROJECT_ROOT="$3"
 
 DRUSH_ALIAS_NO_AT="${DRUSH_ALIAS/@/}"
+PROJECT_NAME=$(echo "$DRUSH_ALIAS_NO_AT" | cut -d'.' -f1)
+PROJECT_ENV=$(echo "$DRUSH_ALIAS_NO_AT" | cut -d'.' -f2)
+
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
 
