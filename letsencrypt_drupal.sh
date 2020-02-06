@@ -11,15 +11,23 @@
 # ** 7|8
 # * Path to project root
 # ** Must contain letsencrypt_drupal folder. See readme.
+# * Switches for Dehydrated
+# ** Pass through these command line args to Dehydrated. OK if blank.
 
 # Basic variables.
 DRUSH_ALIAS="$1"
 DRUPAL_VERSION="$2"
 PROJECT_ROOT="$3"
+DEHYDRATED_SWITCHES="$4"
 
 DRUSH_ALIAS_NO_AT="${DRUSH_ALIAS/@/}"
+
+# We need to export these variables so functions.sh can use them.
+export PROJECT_NAME=$(echo "$DRUSH_ALIAS_NO_AT" | cut -d'.' -f1)
+export PROJECT_ENV=$(echo "$DRUSH_ALIAS_NO_AT" | cut -d'.' -f2)
+
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
+DEHYDRATED="https://github.com/dehydrated-io/dehydrated.git"
 
 FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_drupal/domains_${DRUSH_ALIAS_NO_AT}.txt
 FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal
@@ -102,7 +110,7 @@ main() {
   echo ${DRUPAL_VERSION} > ${FILE_DRUPAL_VERSION}
   echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
 
-  ${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms
+  ${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms ${DEHYDRATED_SWITCHES}
 }
 
 self_update

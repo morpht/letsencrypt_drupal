@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
 CERT_DIR=~/.letsencrypt_drupal
-TMP_DIR=/tmp/letsencrypt_drupal
+TMP_DIR=/tmp/letsencrypt_drupal_${PROJECT_NAME}
 FILE_BASECONFIG=${TMP_DIR}/baseconfig
 FILE_DRUSH_ALIAS=${TMP_DIR}/drush_alias
 FILE_DRUPAL_VERSION=${TMP_DIR}/drupal_version
 FILE_PROJECT_ROOT=${TMP_DIR}/project_root
+LOCK_FILENAME=/tmp/cert_renew_lock_${PROJECT_NAME}
 
 #---------------------------------------------------------------------
 acquire_lock_or_exit()
 {
   # Check we are not running already: http://mywiki.wooledge.org/BashFAQ/045
-  # @ToDo: Platform specific lock.
-  exec 8>/tmp/cert_renew_lock
+  exec 8>${LOCK_FILENAME}
   if ! flock -n 8  ; then
     logline "Another instance of this script running.";
     exit 1
