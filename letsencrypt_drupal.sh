@@ -116,7 +116,7 @@ main() {
 #  echo ${DRUPAL_VERSION} > ${FILE_DRUPAL_VERSION}
 #  echo ${PROJECT_ROOT} > ${FILE_PROJECT_ROOT}
 
-  DEHYDRATED_RESULT=$(${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms --force 2>&1)
+  DEHYDRATED_RESULT=$(${CURRENT_DIR}/dehydrated/dehydrated --config ${FILE_BASECONFIG} --cron --accept-terms 2>&1)
   if [ $? -eq 0 ]
   then
     # Send result to slack.
