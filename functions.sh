@@ -11,7 +11,7 @@ PROJECT_ROOT="/var/www/html/${PROJECT}.${ENVIRONMENT}"
 FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal/config_${PROJECT}.${ENVIRONMENT}.sh
 DIRECTORY_DEHYDRATED_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal/dehydrated
 FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_drupal/domains_${PROJECT}.${ENVIRONMENT}.txt
-DEHYDRATED="https://github.com/lukas2511/dehydrated.git"
+DEHYDRATED="https://github.com/dehydrated-io/dehydrated.git"
 CERT_DIR=~/.letsencrypt_drupal
 TMP_DIR=/tmp/letsencrypt_drupal
 FILE_BASECONFIG=${TMP_DIR}/baseconfig
@@ -47,11 +47,7 @@ slackpost()
 
   if [[ "$SLACK_WEBHOOK_URL" =~ ^https:\/\/hooks.slack.com* ]]; then
     # based on https://gist.github.com/dopiaza/6449505
-#    echo "BEFORE"
-#    echo "$TEXT"
     escapedText=$(echo $TEXT | sed 's/"/\"/g' | sed "s/'/\'/g")
-#    echo "AFTER"
-#    echo "$escapedText"
     json="{\"channel\": \"$SLACK_CHANNEL\", \"username\":\"$USERNAME\", \"icon_emoji\":\"ghost\", \"attachments\":[{\"color\":\"$COLOR\" , \"text\": \"$escapedText\"}]}"
     curl -s -d "payload=$json" "$SLACK_WEBHOOK_URL" || logline "Failed to send message to slack: ${USERNAME}: ${TEXT}"
   else
@@ -85,13 +81,39 @@ drush_set_challenge()
   TOKEN_VALUE="${4}"
 
   if [[ "${DRUPAL_VERSION}" == "7" ]]; then
+    echo "EXECUTING: drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
     drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
+    echo "EXECUTING: drush ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge \"${TOKEN_VALUE}\""
     drush ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge "${TOKEN_VALUE}"
   elif [[ "${DRUPAL_VERSION}" == "8" ]]; then
-    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    drush ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge "${TOKEN_VALUE}"
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge \"${TOKEN_VALUE}\""
+    drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge "${TOKEN_VALUE}"
   elif [[ "${DRUPAL_VERSION}" == "9" ]]; then
-    drush ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    drush ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge "${TOKEN_VALUE}"
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge \"${TOKEN_VALUE}\""
+    drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge "${TOKEN_VALUE}"
+  fi
+}
+
+drush_clean_challenge()
+{
+  DRUSH_ALIAS="${1}"
+  DRUPAL_VERSION="${2}"
+  DOMAIN="${3}"
+
+  if [[ "${DRUPAL_VERSION}" == "7" ]]; then
+    echo "EXECUTING: drush ${DRUSH_ALIAS} dis -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush ${DRUSH_ALIAS} dis -y --uri=${DOMAIN} letsencrypt_challenge
+    echo "EXECUTING: drush ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
+  elif [[ "${DRUPAL_VERSION}" == "8" ]]; then
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
+  elif [[ "${DRUPAL_VERSION}" == "9" ]]; then
+    echo "EXECUTING: drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
+    drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
   fi
 }

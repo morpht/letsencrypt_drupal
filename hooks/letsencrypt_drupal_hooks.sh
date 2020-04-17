@@ -40,7 +40,7 @@ clean_challenge() {
     #
     # The parameters are the same as for deploy_challenge.
 
-    drush_set_challenge ${DRUSH_ALIAS} ${DRUPAL_VERSION} ${DOMAIN} "clean_challenge"
+    drush_clean_challenge ${DRUSH_ALIAS} ${DRUPAL_VERSION} ${DOMAIN}
 }
 
 deploy_cert() {
@@ -162,20 +162,3 @@ HANDLER="$1"; shift
 if [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge|deploy_cert|unchanged_cert|invalid_challenge|request_failure|startup_hook|exit_hook)$ ]]; then
   "$HANDLER" "$@"
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
