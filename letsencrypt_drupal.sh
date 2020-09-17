@@ -86,7 +86,7 @@ main() {
   mkdir -p ${CERT_DIR}
 
   # Generate config and create empty domains.txt
-  echo 'CA="https://acme-v02.api.letsencrypt.org/directory"' > ${FILE_BASECONFIG}
+  echo 'CA="letsencrypt"' > ${FILE_BASECONFIG}
   echo 'CHALLENGETYPE="http-01"' >> ${FILE_BASECONFIG}
   echo 'WELLKNOWN="'${TMP_DIR}/wellknown'"' >> ${FILE_BASECONFIG}
   echo 'BASEDIR="'${CERT_DIR}'"' >> ${FILE_BASECONFIG}
