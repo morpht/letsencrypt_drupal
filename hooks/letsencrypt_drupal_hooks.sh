@@ -73,7 +73,7 @@ deploy_cert() {
         slackpost "${PROJECT_ROOT}" "warning" "SSL bot ${DRUSH_ALIAS}" "*New certificate for ${DOMAIN} was generated.* This instance of morpht/letsencrypt_drupal *is not set up to deploy certificate* automatically. The certificate needs to be uploaded to Acquia manually*.\n\nSSH to \`drush ${DRUSH_ALIAS} ssh\` to read files.\nLogin to Acquia and open target environment. Open SSL tab on the left side. Click Install SSL certificate.\n\nText fields:\nSSL certificate: \`cat ${FULLCHAINFILE}\`\nSSL private key: \`cat ${KEYFILE}\`\nCA intermediate certificates: \`cat ${CHAINFILE}\`"
       else
         # Run certificate deployment.
-        RESULT=$(php $CURRENT_DIR/../acquia_cloud_cert_deployment/cert_deploy.php "${CERT_DEPLOY_ENVIRONMENT_UUID}" "${KEYFILE}" "${FULLCHAINFILE}" "${CHAINFILE}" "${TIMESTAMP}" --activate --label-prefix "letsencrypt_drupal" 2>&1)
+        RESULT=$(php $CURRENT_DIR/../acquia_cloud_cert_deployment/cert_deploy.php "${CERT_DEPLOY_ENVIRONMENT_UUID}" "${KEYFILE}" "${FULLCHAINFILE}" "${CHAINFILE}" "${TIMESTAMP}" --activate --label-prefix $DOMAIN 2>&1)
         if [ $? -eq 0 ]
         then
           # Send successful result to slack.
