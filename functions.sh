@@ -7,7 +7,7 @@
 # Build up all required variables.
 DRUSH_ALIAS="@${PROJECT}.${ENVIRONMENT}"
 # Project root is a known path on Acquia Cloud.
-PROJECT_ROOT="/var/www/html/${PROJECT}.${ENVIRONMENT}"
+PROJECT_ROOT="$HOME/letsencrypt_drupal_config/${PROJECT}.${ENVIRONMENT}"
 FILE_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal/config_${PROJECT}.${ENVIRONMENT}.sh
 DIRECTORY_DEHYDRATED_CONFIG=${PROJECT_ROOT}/letsencrypt_drupal/dehydrated
 FILE_DOMAINSTXT=${PROJECT_ROOT}/letsencrypt_drupal/domains_${PROJECT}.${ENVIRONMENT}.txt
@@ -80,28 +80,13 @@ drush_set_challenge()
   DOMAIN="${3}"
   TOKEN_VALUE="${4}"
 
-  if [[ "${DRUPAL_VERSION}" == "7" ]]; then
-    echo "EXECUTING: drush8 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush8 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    echo "EXECUTING: drush8 ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush8 ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge -
-    echo "EXECUTING: drush8 ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge.${DOMAIN} \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush8 ${DRUSH_ALIAS} vset -y --uri=${DOMAIN} letsencrypt_challenge.${DOMAIN} -
-  elif [[ "${DRUPAL_VERSION}" == "8" ]]; then
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge -
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge.${DOMAIN} \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge.${DOMAIN} -
-  elif [[ "${DRUPAL_VERSION}" == "9" ]]; then
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush9 ${DRUSH_ALIAS} en -y --uri=${DOMAIN} letsencrypt_challenge
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge -
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge.${DOMAIN} \"${TOKEN_VALUE}\""
-    echo "$TOKEN_VALUE" | drush9 ${DRUSH_ALIAS} sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge.${DOMAIN} -
-  fi
+  pushd /var/www/html/${PROJECT}.${ENVIRONMENT}
+  echo "EXECUTING: drush en -y --uri=${DOMAIN} letsencrypt_challenge"
+  drush en -y --uri=${DOMAIN} letsencrypt_challenge
+  echo "EXECUTING: drush sset -y --uri=${DOMAIN} letsencrypt_challenge.challenge \"${TOKEN_VALUE}\""
+  drush -y --uri=${DOMAIN} sset letsencrypt_challenge.challenge "${TOKEN_VALUE}"
+  drush --uri=${DOMAIN} cr
+  popd
 }
 
 drush_clean_challenge()
@@ -110,16 +95,7 @@ drush_clean_challenge()
   DRUPAL_VERSION="${2}"
   DOMAIN="${3}"
 
-  if [[ "${DRUPAL_VERSION}" == "7" ]]; then
-    echo "EXECUTING: drush8 ${DRUSH_ALIAS} dis -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush8 ${DRUSH_ALIAS} dis -y --uri=${DOMAIN} letsencrypt_challenge
-    echo "EXECUTING: drush8 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush8 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
-  elif [[ "${DRUPAL_VERSION}" == "8" ]]; then
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
-  elif [[ "${DRUPAL_VERSION}" == "9" ]]; then
-    echo "EXECUTING: drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge"
-    drush9 ${DRUSH_ALIAS} pmu -y --uri=${DOMAIN} letsencrypt_challenge
-  fi
+  pushd /var/www/html/${PROJECT}.${ENVIRONMENT}
+  drush pmu -y --uri=${DOMAIN} letsencrypt_challenge
+  popd
 }

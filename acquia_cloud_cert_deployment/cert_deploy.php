@@ -137,7 +137,7 @@ if ($response->getStatusCode() == 202 && $cmd['activate']) {
  */
 function extract_secrets($cmd) {
   // Load Acquia Cloud secrets file
-  $secrets_file = sprintf('/mnt/files/%s.%s/secrets.settings.php', $_ENV['AH_SITE_GROUP'], $_ENV['AH_SITE_ENVIRONMENT']);
+  $secrets_file = sprintf('%s/letsencrypt_drupal_config/%s.%s/secrets.settings.php',$_ENV['HOME'], $_ENV['AH_SITE_GROUP'], $_ENV['AH_SITE_ENVIRONMENT']);
 
   if (!file_exists($secrets_file)) {
     $cmd->error(new Exception('The secrets file wasn\'t found. Please read https://docs.acquia.com/resource/secrets/ and create one.'));
