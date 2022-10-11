@@ -4,46 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53bee355d7b3dc15040e2186cfd9c64e",
+    "content-hash": "d3d3984127d5f3dfd3c06c87fd04a0b5",
     "packages": [
         {
             "name": "acquia/http-hmac-php",
-            "version": "4.0.1",
+            "version": "6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acquia/http-hmac-php.git",
-                "reference": "da3ad88dc10ded01a666e520b56f5e7517590a37"
+                "reference": "f4405aa98531b3d6b094b928495e93bc171b7758"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acquia/http-hmac-php/zipball/da3ad88dc10ded01a666e520b56f5e7517590a37",
-                "reference": "da3ad88dc10ded01a666e520b56f5e7517590a37",
+                "url": "https://api.github.com/repos/acquia/http-hmac-php/zipball/f4405aa98531b3d6b094b928495e93bc171b7758",
+                "reference": "f4405aa98531b3d6b094b928495e93bc171b7758",
                 "shasum": ""
             },
             "require": {
-                "php": "~5.6 || ~7.0",
-                "psr/http-message": "~1.0.0"
+                "php": ">=7.3.0",
+                "psr/http-message": "^1.0"
             },
             "replace": {
                 "acquia/hmac-request": "self.version"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.11",
-                "guzzlehttp/guzzle": "~6.0",
-                "phploc/phploc": "^4.0",
+                "friendsofphp/php-cs-fixer": "^3.2.1",
+                "guzzlehttp/guzzle": "^6.0",
+                "nyholm/psr7": "^1.0",
+                "php-coveralls/php-coveralls": "^2.2",
                 "phpmd/phpmd": "^2.0",
-                "phpunit/phpunit": "~5.7",
-                "sebastian/phpcpd": "^2.0",
-                "symfony/psr-http-message-bridge": "^1.0",
-                "symfony/security": "^3.0 | ^4.0",
-                "symfony/security-bundle": "^3.0 | ^4.0",
-                "zendframework/zend-diactoros": "^1.3"
+                "phpunit/phpunit": "^8.0",
+                "symfony/phpunit-bridge": "^4.0 || ^5.0",
+                "symfony/psr-http-message-bridge": "^2.0",
+                "symfony/security-bundle": "^4.0 || ^5.0"
             },
             "suggest": {
-                "guzzlehttp/guzzle": "~6.0",
-                "symfony/psr-http-message-bridge": "^1.0",
-                "symfony/security": "^3.0 | ^4.0",
-                "zendframework/zend-diactoros": "^1.3"
+                "guzzlehttp/guzzle": "^6.0",
+                "laminas/laminas-diactoros": "^1.8 || ^2.2",
+                "symfony/security": "^4.0 || ^5.0"
             },
             "type": "library",
             "autoload": {
@@ -63,7 +61,11 @@
             ],
             "description": "An implementation of the HTTP HMAC Spec in PHP that integrates with popular libraries such as Symfony and Guzzle.",
             "homepage": "https://github.com/acquia/http-hmac-php",
-            "time": "2018-03-23T16:51:53+00:00"
+            "support": {
+                "issues": "https://github.com/acquia/http-hmac-php/issues",
+                "source": "https://github.com/acquia/http-hmac-php/tree/6.0.0"
+            },
+            "time": "2021-10-21T21:17:37+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -443,5 +445,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
